@@ -1,0 +1,25 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.pdfviewer"
+        minSdkVersion 24
+        targetSdkVersion 36
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            debuggable true
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+    namespace 'com.github.barteksc.sample'
+}
+
+dependencies {
+    implementation project(':android-pdf-viewer')
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+}
