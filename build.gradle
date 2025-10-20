@@ -1,3 +1,5 @@
+apply plugin: 'maven-publish'
+
 buildscript {
     repositories {
         google()
@@ -14,5 +16,20 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+    }
+}
+
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a publication named "release". You can give it any name.
+            release(MavenPublication) {
+                // Set the Maven coordinates for your library
+                groupId = 'com.github.maribeiroleya' // e.g., com.github.yourusername
+                artifactId = 'leya-android-pdf-viewer'
+            }
+        }
     }
 }
