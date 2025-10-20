@@ -149,6 +149,15 @@ class PdfFile {
         return pageSizes.get(pageIndex);
     }
 
+
+    public Size getOriginalPageSize(int pageIndex) {
+        int docPage = documentPage(pageIndex);
+        if (docPage < 0) {
+            return new Size(0, 0);
+        }
+        return pdfiumCore.getPageSize(pdfDocument, documentPage(0));
+    }
+
     public SizeF getScaledPageSize(int pageIndex, float zoom) {
         SizeF size = getPageSize(pageIndex);
         return new SizeF(size.getWidth() * zoom, size.getHeight() * zoom);

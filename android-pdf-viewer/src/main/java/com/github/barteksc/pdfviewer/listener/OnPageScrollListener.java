@@ -28,4 +28,6 @@ public interface OnPageScrollListener {
      * @param positionOffset see {@link com.github.barteksc.pdfviewer.PDFView#getPositionOffset()}
      */
     void onPageScrolled(int page, float positionOffset);
+
+    void onPageScrolledEnd(float zoom);
 }

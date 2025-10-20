@@ -17,6 +17,7 @@ package com.github.barteksc.pdfviewer;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import android.util.SizeF;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -192,6 +193,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
         if (!animationManager.isFlinging()) {
             pdfView.performPageSnap();
         }
+        pdfView.zoomEnd();
     }
 
     @Override
@@ -201,6 +203,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        pdfView.swipeChangePage((int) (velocityX));
         if (!pdfView.isSwipeEnabled()) {
             return false;
         }
@@ -282,6 +285,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
         pdfView.loadPages();
         hideHandle();
         scaling = false;
+        pdfView.zoomEnd();
     }
 
     @Override

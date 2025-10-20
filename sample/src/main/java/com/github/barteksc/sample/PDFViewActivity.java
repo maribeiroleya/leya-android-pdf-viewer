@@ -20,13 +20,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.util.SizeF;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,24 +39,38 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnActionEndListener;
+import com.github.barteksc.pdfviewer.listener.OnDrawListener;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
+import com.github.barteksc.pdfviewer.listener.OnPageScrollListener;
+import com.github.barteksc.pdfviewer.listener.OnPageSwipeChangeListener;
+import com.github.barteksc.pdfviewer.listener.OnRenderListener;
+import com.github.barteksc.pdfviewer.listener.OnTapListener;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
-import io.legere.pdfiumandroid.PdfDocument;
+import com.github.barteksc.pdfviewer.util.Hotspot;
+import com.github.barteksc.pdfviewer.util.Note;
+import com.github.barteksc.pdfviewer.util.TextLine;
+import com.github.barteksc.pdfviewer.util.TextNote;
 
+import com.google.gson.JsonArray;
+import io.legere.pdfiumandroid.PdfDocument;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class PDFViewActivity extends AppCompatActivity implements OnPageChangeListener, OnLoadCompleteListener,
-        OnPageErrorListener {
+public class PDFViewActivity extends AppCompatActivity implements OnPageChangeListener, OnLoadCompleteListener, OnPageErrorListener, OnDrawListener, OnActionEndListener, OnRenderListener, OnPageSwipeChangeListener, OnPageScrollListener, OnTapListener {
 
     private static final String TAG = PDFViewActivity.class.getSimpleName();
 
     private final static int REQUEST_CODE = 42;
     public static final int PERMISSION_CODE = 42042;
 
-    public static final String SAMPLE_FILE = "sample.pdf";
+    public static final String SAMPLE_FILE = "3.pdf";
     public static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
 
     private PDFView pdfView;
@@ -63,6 +80,11 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
     private Integer pageNumber = 0;
 
     private String pdfFileName;
+
+    private String hotspotsString;
+    private String notesString;
+    private String textNotesString;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -134,17 +156,80 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
         setTitle(pdfFileName);
     }
 
+    public static JsonArray stringToArray(String string) {
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .create();
+        return gson.fromJson(string, JsonArray.class);
+    }
+
     private void displayFromAsset(String assetFileName) {
         boolean isLandscape = false;
         int orientation = this.getResources().getConfiguration().orientation;
         isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE;
         pdfFileName = assetFileName;
 
+        List<Hotspot> hotspots = new ArrayList<>();
+        hotspots.add(new Hotspot(22.58064516129032, 35.80246913580247, "play"));
+        hotspots.add(new Hotspot(32.25491431451613, 35.95679012345679, "game"));
+        hotspots.add(new Hotspot(12.093623991935484, 38.269193672839506, "default"));
+        hotspots.add(new Hotspot(0.0, 95.37037037037037, "activity"));
+        hotspots.add(new Hotspot(9.07258064516129, 83.64198001814476, "link"));
+        hotspots.add(new Hotspot(66.33064516129032, 64.043214586046, "key"));
+        hotspots.add(new Hotspot(7.661290322580645, 8.333333333333332, "audio"));
+        hotspots.add(new Hotspot(7.661290322580645, 18.333333333333332, "check_mark"));
+        hotspots.add(new Hotspot(17.661290322580645, 18.333333333333332, "document"));
+        hotspots.add(new Hotspot(17.661290322580645, 28.333333333333332, "image"));
+        hotspots.add(new Hotspot(27.661290322580645, 28.333333333333332, "link"));
+        hotspots.add(new Hotspot(27.661290322580645, 38.333333333333332, "presentation"));
+
+
+        List<TextNote> textNotes = new ArrayList<>();
+        List<TextLine> lines1 = new ArrayList<>();
+        TextLine line1 = new TextLine(24, "#000000", 1.0f, "Practice");
+        lines1.add(line1);
+        TextNote textNote1 = new TextNote(76.58132030558352, 56.71656202823219, 10.227475093577894, 2.391138281472756, "#FE7F00", 1.0f, "#000000",1, 1.0f, lines1);
+        textNotes.add(textNote1);
+        List<TextLine> lines2 = new ArrayList<>();
+        TextLine line2 = new TextLine(84, "#000000", 1.0f, "Practice\nghg");
+        lines2.add(line2);
+        TextNote textNote2 = new TextNote(35.3, 15.5, 36.4, 12.4, "#FE7F00", 1.0f, "#000000",10, 0.5f, lines2);
+        textNotes.add(textNote2);
+
+
+        List<Note> notes = new ArrayList<>();
+        notes.add(new Note(10, 10, "blue"));
+        notes.add(new Note(40, 50, "red"));
+        notes.add(new Note(0, 10, "blue"));
+        notes.add(new Note(30, 50, "red"));
+        notes.add(new Note(100, 10, "blue"));
+        notes.add(new Note(20, 50, "red"));
+        notes.add(new Note(90, 10, "blue"));
+        notes.add(new Note(60, 50, "red"));
+        notes.add(new Note(80, 10, "blue"));
+        notes.add(new Note(45, 50, "red"));
+        notes.add(new Note(10, 10, "blue"));
+
+
+
+
         pdfView.fromAsset(SAMPLE_FILE)
                 .defaultPage(pageNumber)
+                .enableMovement(true)
+                .withHotspots(hotspots)
+                .withNotes(notes)
+                .withTextNotes(textNotes)
                 .onPageChange(this)
                 .enableAnnotationRendering(true)
                 .onLoad(this)
+                .onDraw(this)
+                .onActionEnd(this)
+                .onRender(this)
+                .onPageScroll(this)
+                .onPageSwipeChange(this)
+                .onActionEnd(this)
                 .landscapeOrientation(isLandscape)
                 .dualPageMode(false)
                 .scrollHandle(new DefaultScrollHandle(this))
@@ -168,7 +253,7 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
                 .onLoad(this)
                 .scrollHandle(new DefaultScrollHandle(this))
                 .spacing(0) // in dp
-                .dualPageMode(true)
+                .dualPageMode(false)
                 .enableSwipe(true)
                 .swipeHorizontal(true)
                 .pageFling(true)
@@ -215,22 +300,6 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
         return result;
     }
 
-    @Override
-    public void loadComplete(int nbPages) {
-        PdfDocument.Meta meta = pdfView.getDocumentMeta();
-        Log.e(TAG, "title = " + meta.getTitle());
-        Log.e(TAG, "author = " + meta.getAuthor());
-        Log.e(TAG, "subject = " + meta.getSubject());
-        Log.e(TAG, "keywords = " + meta.getKeywords());
-        Log.e(TAG, "creator = " + meta.getCreator());
-        Log.e(TAG, "producer = " + meta.getProducer());
-        Log.e(TAG, "creationDate = " + meta.getCreationDate());
-        Log.e(TAG, "modDate = " + meta.getModDate());
-
-        printBookmarksTree(pdfView.getTableOfContents(), "-");
-
-    }
-
     public void printBookmarksTree(List<PdfDocument.Bookmark> tree, String sep) {
         for (PdfDocument.Bookmark b : tree) {
 
@@ -265,4 +334,61 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
     public void onPageError(int page, Throwable t) {
         Log.e(TAG, "Cannot load page " + page);
     }
+
+    @Override
+    public void onLayerDrawn(Canvas canvas, float pageWidth, float pageHeight, int displayedPage) {
+
+    }
+
+    @Override
+    public void loadComplete(int nbPages) {
+        SizeF pageSize = this.pdfView.getPageSize(0);
+        float width = pageSize.getWidth();
+        float height = pageSize.getHeight();
+    }
+
+    @Override
+    public void actionEnd() {
+
+        Log.d("ACTION_END", "1");
+
+        SizeF pageSize = this.pdfView.getPageSize(0);
+        float width = pageSize.getWidth();
+        float height = pageSize.getHeight();
+    }
+
+    @Override
+    public void onInitiallyRendered(int nbPages) {
+        Log.d("ON_RENDER", "ON_RENDER");
+    }
+
+    @Override
+    public void onPageSwipeChange(int offset) {
+        Log.d("onPageSwipeChange", "0");
+        if(Math.abs(offset) > 300*getResources().getDisplayMetrics().density) {
+            if(offset > 0) {
+                Log.d("onPageSwipeChange", "prevPage");
+
+            }
+            else {
+                Log.d("onPageSwipeChange", "nextPage");
+            }
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int page, float positionOffset) {
+
+    }
+
+    @Override
+    public boolean onTap(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onPageScrolledEnd(float zoom) {
+        Log.d("onPageScrolledEnd", "onPageScrolledEnd");
+    }
+
 }
