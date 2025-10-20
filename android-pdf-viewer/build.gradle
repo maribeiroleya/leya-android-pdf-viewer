@@ -1,16 +1,35 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 android {
+    namespace 'com.github.barteksc.pdfviewer'
     compileSdk 36
 
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 36
+        minSdk 24
+        targetSdk 36
     }
-    namespace 'com.github.barteksc.pdfviewer'
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
     implementation 'androidx.core:core:1.17.0'
     api 'io.legere:pdfiumandroid:1.0.34'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create("release", MavenPublication) {
+                from components.release
+                groupId = "com.github.maribeiroleya"
+                artifactId = "leya-android-pdf-viewer"
+            }
+        }
+    }
 }
