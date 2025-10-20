@@ -37,6 +37,11 @@ public class Callbacks {
      */
     private OnPageErrorListener onPageErrorListener;
 
+
+    private OnPageSwipeChangeListener onPageSwipeChangeListener;
+
+    private OnActionEndListener onActionEndListener;
+
     /**
      * Call back object to call when the document is initially rendered
      */
@@ -104,6 +109,26 @@ public class Callbacks {
         return false;
     }
 
+    public void setOnPageSwipeChange(OnPageSwipeChangeListener onPageSwipeChangeListener) {
+        this.onPageSwipeChangeListener = onPageSwipeChangeListener;
+    }
+
+    public void callOnPageSwipeChange(int offset) {
+        if (onPageSwipeChangeListener != null) {
+            onPageSwipeChangeListener.onPageSwipeChange(offset);
+        }
+    }
+
+    public void setOnActionEnd(OnActionEndListener onActionEndListener) {
+        this.onActionEndListener = onActionEndListener;
+    }
+
+    public void callOnActionEnd() {
+        if (onActionEndListener != null) {
+            onActionEndListener.actionEnd();
+        }
+    }
+
     public void setOnRender(OnRenderListener onRenderListener) {
         this.onRenderListener = onRenderListener;
     }
@@ -131,6 +156,12 @@ public class Callbacks {
     public void callOnPageScroll(int currentPage, float offset) {
         if (onPageScrollListener != null) {
             onPageScrollListener.onPageScrolled(currentPage, offset);
+        }
+    }
+
+    public void callOnPageScrollEnds(float zoom) {
+        if (onPageScrollListener != null) {
+            onPageScrollListener.onPageScrolledEnd(zoom);
         }
     }
 
