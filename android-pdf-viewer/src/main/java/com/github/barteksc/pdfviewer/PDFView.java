@@ -1347,6 +1347,12 @@ public class PDFView extends RelativeLayout {
         moveTo(currentXOffset + dx, currentYOffset + dy);
     }
 
+
+    public float getZoomScale() {
+        return this.zoom;
+    }
+
+
     /**
      * Change the zoom level
      */
