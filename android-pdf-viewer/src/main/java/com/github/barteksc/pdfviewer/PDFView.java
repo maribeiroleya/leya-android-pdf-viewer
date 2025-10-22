@@ -1621,7 +1621,7 @@ public class PDFView extends RelativeLayout {
     /**
      * Returns null if document is not loaded
      */
-    public PdfDocument.Meta getDocumentMeta() {
+    /*public PdfDocument.Meta getDocumentMeta() {
         if (pdfFile == null) {
             return null;
         }

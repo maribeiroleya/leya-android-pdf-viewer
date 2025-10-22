@@ -88,14 +88,14 @@ class RenderingHandler extends Handler {
 
     private PagePart proceed(RenderingTask renderingTask) throws PageRenderingException {
         PdfFile pdfFile = pdfView.pdfFile;
-        pdfFile.openPage(renderingTask.page);
+        //pdfFile.openPage(renderingTask.page);
 
         int w = Math.round(renderingTask.width);
         int h = Math.round(renderingTask.height);
 
-        if (w == 0 || h == 0 || pdfFile.pageHasError(renderingTask.page)) {
+        /*if (w == 0 || h == 0 || pdfFile.pageHasError(renderingTask.page)) {
             return null;
-        }
+        }*/
 
         Bitmap render;
         try {
