@@ -106,8 +106,9 @@ class RenderingHandler extends Handler {
         }
         calculateBounds(w, h, renderingTask.bounds);
 
-        pdfFile.renderPageBitmap(render, renderingTask.page, roundedRenderBounds, renderingTask.annotationRendering);
-
+        if(!this.pdfView.closing) {
+            pdfFile.renderPageBitmap(render, renderingTask.page, roundedRenderBounds, renderingTask.annotationRendering);
+        }
         return new PagePart(renderingTask.page, render,
                 renderingTask.bounds, renderingTask.thumbnail,
                 renderingTask.cacheOrder);

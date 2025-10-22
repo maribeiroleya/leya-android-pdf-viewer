@@ -237,6 +237,8 @@ public class PDFView extends RelativeLayout {
 
     private boolean isScrollHandleInit = false;
 
+    public boolean closing = false;
+
     ScrollHandle getScrollHandle() {
         return scrollHandle;
     }
@@ -578,7 +580,10 @@ public class PDFView extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
+        this.closing = true;
+        Log.d("onDetachedFromWindow", "onDetachedFromWindow 1");
         recycle();
+        Log.d("onDetachedFromWindow", "onDetachedFromWindow 2");
         if (renderingHandlerThread != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 renderingHandlerThread.quitSafely();

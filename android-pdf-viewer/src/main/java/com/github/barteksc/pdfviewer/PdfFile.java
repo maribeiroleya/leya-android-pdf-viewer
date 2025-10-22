@@ -308,8 +308,8 @@ class PdfFile {
 
     public void renderPageBitmap(Bitmap bitmap, int pageIndex, Rect bounds, boolean annotationRendering) {
         int docPage = documentPage(pageIndex);
-        PdfPage page = pdfDocument.openPage(docPage);
         if(!pdfDocument.isClosed()) {
+            PdfPage page = pdfDocument.openPage(docPage);
             page.renderPageBitmap(bitmap, bounds.left, bounds.top, bounds.width(), bounds.height(), false, false, 0xFFFFFFFF, 0xFFFFFFFF);
         }
     }
