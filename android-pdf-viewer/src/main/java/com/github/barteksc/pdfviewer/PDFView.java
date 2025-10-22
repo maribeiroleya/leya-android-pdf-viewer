@@ -714,24 +714,23 @@ public class PDFView extends RelativeLayout {
         canvas.translate(currentXOffset, currentYOffset);
 
         // Draws thumbnails
-        for (PagePart part : cacheManager.getThumbnails()) {
+        /*for (PagePart part : cacheManager.getThumbnails()) {
             drawPart(canvas, part);
-        }
+        }*/
 
         // Draws parts
         for (PagePart part : cacheManager.getPageParts()) {
-            Log.d("TESTE","TESTE");
             drawPart(canvas, part);
-            if (callbacks.getOnDrawAll() != null
+            /*if (callbacks.getOnDrawAll() != null
                     && !onDrawPagesNums.contains(part.getPage())) {
                 onDrawPagesNums.add(part.getPage());
-            }
+            }*/
         }
 
-        for (Integer page : onDrawPagesNums) {
+        /*for (Integer page : onDrawPagesNums) {
             drawWithListener(canvas, page, callbacks.getOnDrawAll());
         }
-        onDrawPagesNums.clear();
+        onDrawPagesNums.clear();*/
 
         drawWithListener(canvas, currentPage, callbacks.getOnDraw());
 
