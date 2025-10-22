@@ -541,7 +541,7 @@ public class PDFView extends RelativeLayout {
         Log.d("recycle", "recycle 6");
 
         if (pdfFile != null) {
-            pdfFile.dispose();
+            //pdfFile.dispose();
             pdfFile = null;
         }
 
