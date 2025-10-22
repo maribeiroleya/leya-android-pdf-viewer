@@ -237,8 +237,6 @@ public class PDFView extends RelativeLayout {
 
     private boolean isScrollHandleInit = false;
 
-    public boolean closing = false;
-
     ScrollHandle getScrollHandle() {
         return scrollHandle;
     }
@@ -506,16 +504,10 @@ public class PDFView extends RelativeLayout {
     }
 
     public void recycle() {
-        Log.d("recycle", "recycle 1");
         waitingDocumentConfigurator = null;
-
-
-
 
         animationManager.stopAll();
         dragPinchManager.disable();
-
-        Log.d("recycle", "recycle 3");
 
         // Stop tasks
         if (renderingHandler != null) {
@@ -526,27 +518,18 @@ public class PDFView extends RelativeLayout {
             decodingAsyncTask.cancel(true);
         }
 
-        Log.d("recycle", "recycle 4");
-
         // Clear caches
         cacheManager.recycle();
-
-        Log.d("recycle", "recycle 5");
 
 
         if (scrollHandle != null && isScrollHandleInit) {
             scrollHandle.destroyLayout();
         }
 
-        Log.d("recycle", "recycle 6");
-
         if (pdfFile != null) {
             //pdfFile.dispose();
             pdfFile = null;
         }
-
-
-        Log.d("recycle", "recycle 7");
 
 
         renderingHandler = null;
@@ -557,9 +540,6 @@ public class PDFView extends RelativeLayout {
         recycled = true;
         callbacks = new Callbacks();
         state = State.DEFAULT;
-
-
-        Log.d("recycle", "recycle 8");
     }
 
     public boolean isRecycled() {
@@ -580,10 +560,7 @@ public class PDFView extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        this.closing = true;
-        Log.d("onDetachedFromWindow", "onDetachedFromWindow 1");
         recycle();
-        Log.d("onDetachedFromWindow", "onDetachedFromWindow 2");
         if (renderingHandlerThread != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 renderingHandlerThread.quitSafely();
@@ -739,23 +716,23 @@ public class PDFView extends RelativeLayout {
         canvas.translate(currentXOffset, currentYOffset);
 
         // Draws thumbnails
-        /*for (PagePart part : cacheManager.getThumbnails()) {
+        for (PagePart part : cacheManager.getThumbnails()) {
             drawPart(canvas, part);
-        }*/
+        }
 
         // Draws parts
         for (PagePart part : cacheManager.getPageParts()) {
             drawPart(canvas, part);
-            /*if (callbacks.getOnDrawAll() != null
+            if (callbacks.getOnDrawAll() != null
                     && !onDrawPagesNums.contains(part.getPage())) {
                 onDrawPagesNums.add(part.getPage());
-            }*/
+            }
         }
 
-        /*for (Integer page : onDrawPagesNums) {
+        for (Integer page : onDrawPagesNums) {
             drawWithListener(canvas, page, callbacks.getOnDrawAll());
         }
-        onDrawPagesNums.clear();*/
+        onDrawPagesNums.clear();
 
         drawWithListener(canvas, currentPage, callbacks.getOnDraw());
 
@@ -1099,13 +1076,6 @@ public class PDFView extends RelativeLayout {
 
         this.originalPageSizeWidth = pdfFile.getOriginalPageSize(currentPage).getWidth();
         jumpTo(defaultPage, false);
-    }
-
-
-    public void cancelRender() {
-        renderingHandlerThread.stop();
-        this.recycle();
-        this.destroyDrawingCache();
     }
 
 
