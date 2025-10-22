@@ -504,10 +504,16 @@ public class PDFView extends RelativeLayout {
     }
 
     public void recycle() {
+        Log.d("recycle", "recycle 1");
         waitingDocumentConfigurator = null;
+
+
+
 
         animationManager.stopAll();
         dragPinchManager.disable();
+
+        Log.d("recycle", "recycle 3");
 
         // Stop tasks
         if (renderingHandler != null) {
@@ -518,17 +524,28 @@ public class PDFView extends RelativeLayout {
             decodingAsyncTask.cancel(true);
         }
 
+        Log.d("recycle", "recycle 4");
+
         // Clear caches
         cacheManager.recycle();
+
+        Log.d("recycle", "recycle 5");
+
 
         if (scrollHandle != null && isScrollHandleInit) {
             scrollHandle.destroyLayout();
         }
 
+        Log.d("recycle", "recycle 6");
+
         if (pdfFile != null) {
             pdfFile.dispose();
             pdfFile = null;
         }
+
+
+        Log.d("recycle", "recycle 7");
+
 
         renderingHandler = null;
         scrollHandle = null;
@@ -538,6 +555,9 @@ public class PDFView extends RelativeLayout {
         recycled = true;
         callbacks = new Callbacks();
         state = State.DEFAULT;
+
+
+        Log.d("recycle", "recycle 8");
     }
 
     public boolean isRecycled() {
@@ -1075,6 +1095,14 @@ public class PDFView extends RelativeLayout {
         this.originalPageSizeWidth = pdfFile.getOriginalPageSize(currentPage).getWidth();
         jumpTo(defaultPage, false);
     }
+
+
+    public void cancelRender() {
+        renderingHandlerThread.stop();
+        this.recycle();
+        this.destroyDrawingCache();
+    }
+
 
     void loadError(Throwable t) {
         state = State.ERROR;
