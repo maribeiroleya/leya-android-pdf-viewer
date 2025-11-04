@@ -876,8 +876,14 @@ public class PDFView extends RelativeLayout {
 
     public Bitmap getBitmapForHotspotFromVectorDrawable(Context context, float width, float height, Hotspot hotspot) {
         if(hotspot.getBitmap() == null) {
-            int drawableId = getResources().getIdentifier(String.format("classification_%s", hotspot.getType()), "drawable", context.getPackageName());
-            Drawable drawable = getResources().getDrawable(drawableId);
+            Drawable drawable = null;
+            try {
+                int drawableId = getResources().getIdentifier(String.format("classification_%s", hotspot.getType()), "drawable", context.getPackageName());
+                drawable = getResources().getDrawable(drawableId);
+            } catch (Exception e) {
+                int drawableId = getResources().getIdentifier("classification_default", "drawable", context.getPackageName());
+                drawable = getResources().getDrawable(drawableId);
+            }
             Bitmap bitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());

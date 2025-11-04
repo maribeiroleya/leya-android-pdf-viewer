@@ -183,7 +183,7 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
         hotspots.add(new Hotspot(17.661290322580645, 18.333333333333332, "document"));
         hotspots.add(new Hotspot(17.661290322580645, 28.333333333333332, "image"));
         hotspots.add(new Hotspot(27.661290322580645, 28.333333333333332, "link"));
-        hotspots.add(new Hotspot(27.661290322580645, 38.333333333333332, "presentation"));
+        hotspots.add(new Hotspot(27.661290322580645, 38.333333333333332, "bookmark"));
 
 
         List<TextNote> textNotes = new ArrayList<>();
