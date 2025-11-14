@@ -195,7 +195,7 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
         List<TextLine> lines2 = new ArrayList<>();
         TextLine line2 = new TextLine(84, "#000000", 1.0f, "Practice\nghg");
         lines2.add(line2);
-        TextNote textNote2 = new TextNote(35.3, 15.5, 36.4, 12.4, "#FE7F00", 1.0f, "#000000",10, 0.5f, lines2);
+        TextNote textNote2 = new TextNote(55.3, 10.5, 36.4, 12.4, "#FE7F00", 1.0f, "#000000",10, 0.5f, lines2);
         textNotes.add(textNote2);
 
 
