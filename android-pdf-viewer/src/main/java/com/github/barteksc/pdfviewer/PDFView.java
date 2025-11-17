@@ -739,9 +739,6 @@ public class PDFView extends RelativeLayout {
         if(originalPageSizeWidth != 0) {
             float defaultWidthNotes = 70 * pdfFile.getPageSize(currentPage).getWidth() / originalPageSizeWidth * getResources().getDisplayMetrics().density;
             float defaultWidthHotspot = 60 * pdfFile.getPageSize(currentPage).getWidth() / originalPageSizeWidth * getResources().getDisplayMetrics().density;
-            for (Hotspot hotspot : this.hotspots) {
-                drawHotspot(canvas, hotspot, defaultWidthHotspot);
-            }
             for (TextNote textNote : this.textNotes) {
                 if(!textNote.isEditing()) {
                     drawTextNote(canvas, textNote);
@@ -749,6 +746,9 @@ public class PDFView extends RelativeLayout {
             }
             for (Note note : this.notes) {
                 drawNote(canvas, note, defaultWidthNotes);
+            }
+            for (Hotspot hotspot : this.hotspots) {
+                drawHotspot(canvas, hotspot, defaultWidthHotspot);
             }
             for (TextNote textNote : this.textNotes) {
                 if(textNote.isEditing()) {
