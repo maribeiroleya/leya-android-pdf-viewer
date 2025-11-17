@@ -743,10 +743,17 @@ public class PDFView extends RelativeLayout {
                 drawHotspot(canvas, hotspot, defaultWidthHotspot);
             }
             for (TextNote textNote : this.textNotes) {
-                drawTextNote(canvas, textNote);
+                if(!textNote.isEditing()) {
+                    drawTextNote(canvas, textNote);
+                }
             }
             for (Note note : this.notes) {
                 drawNote(canvas, note, defaultWidthNotes);
+            }
+            for (TextNote textNote : this.textNotes) {
+                if(textNote.isEditing()) {
+                    drawTextNote(canvas, textNote);
+                }
             }
         }
 

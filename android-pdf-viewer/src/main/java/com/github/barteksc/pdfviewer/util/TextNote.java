@@ -17,6 +17,9 @@ public class TextNote {
     private List<TextLine> lines;
 
 
+    private boolean editing;
+
+
     public TextNote(
             double xPos,
             double yPos,
@@ -27,7 +30,8 @@ public class TextNote {
             String borderColor,
             int borderSize,
             float borderAlpha,
-            List<TextLine> lines) {
+            List<TextLine> lines,
+            boolean editing) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.width = width;
@@ -38,6 +42,7 @@ public class TextNote {
         this.borderSize = borderSize;
         this.borderAlpha = (int)(255*borderAlpha);
         this.lines = lines;
+        this.editing = editing;
     }
 
 
@@ -74,5 +79,9 @@ public class TextNote {
 
     public List<TextLine> getLines() {
         return this.lines;
+    }
+
+    public boolean isEditing() {
+        return this.editing;
     }
 }
