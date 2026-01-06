@@ -736,9 +736,10 @@ public class PDFView extends RelativeLayout {
 
         drawWithListener(canvas, currentPage, callbacks.getOnDraw());
 
-        if(originalPageSizeWidth != 0) {
-            float defaultWidthNotes = 70 * pdfFile.getPageSize(currentPage).getWidth() / originalPageSizeWidth * getResources().getDisplayMetrics().density;
-            float defaultWidthHotspot = 60 * pdfFile.getPageSize(currentPage).getWidth() / originalPageSizeWidth * getResources().getDisplayMetrics().density;
+        Log.d("TESTE TESTE", String.format("%d", pdfFile.getOriginalPageSize(currentPage).getWidth()));
+        //if(originalPageSizeWidth != 0) {
+            float defaultWidthNotes = 70 * pdfFile.getPageSize(currentPage).getWidth() / pdfFile.getOriginalPageSize(currentPage).getWidth() * getResources().getDisplayMetrics().density;
+            float defaultWidthHotspot = 60 * pdfFile.getPageSize(currentPage).getWidth() / pdfFile.getOriginalPageSize(currentPage).getWidth() * getResources().getDisplayMetrics().density;
             for (TextNote textNote : this.textNotes) {
                 if(!textNote.isEditing()) {
                     drawTextNote(canvas, textNote);
@@ -755,7 +756,7 @@ public class PDFView extends RelativeLayout {
                     drawTextNote(canvas, textNote);
                 }
             }
-        }
+        //}
 
         // Restores the canvas position
         canvas.translate(-currentXOffset, -currentYOffset);
@@ -883,6 +884,7 @@ public class PDFView extends RelativeLayout {
 
     public Bitmap getBitmapForHotspotFromVectorDrawable(Context context, float width, float height, Hotspot hotspot) {
         if(hotspot.getBitmap() == null) {
+            Log.d("HOTSPOTS", "1");
             Drawable drawable = null;
             try {
                 int drawableId = getResources().getIdentifier(String.format("classification_%s", hotspot.getType()), "drawable", context.getPackageName());
@@ -898,6 +900,7 @@ public class PDFView extends RelativeLayout {
             hotspot.setBitmap(bitmap);
             return bitmap;
         }
+        Log.d("HOTSPOTS", "2");
         return hotspot.getBitmap();
     }
 
