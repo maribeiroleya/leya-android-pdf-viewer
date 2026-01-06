@@ -459,7 +459,9 @@ public class PDFView extends RelativeLayout {
 
 
     public void setHotspots(List<Hotspot> hotspots) {
-        this.hotspots = hotspots;
+        if(this.hotspots == null || this.hotspots.isEmpty()) {
+            this.hotspots = hotspots;
+        }
     }
 
 
