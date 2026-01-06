@@ -738,11 +738,9 @@ public class PDFView extends RelativeLayout {
 
         drawWithListener(canvas, currentPage, callbacks.getOnDraw());
 
-        //if(originalPageSizeWidth != 0) {
-            float defaultWidthNotes = 70 * pdfFile.getPageSize(currentPage).getWidth() / pdfFile.getOriginalPageSize(currentPage).getWidth() * getResources().getDisplayMetrics().density;
-            float defaultWidthHotspot = 60 * pdfFile.getPageSize(currentPage).getWidth() / pdfFile.getOriginalPageSize(currentPage).getWidth() * getResources().getDisplayMetrics().density;
-
-        Log.d("TESTE TESTE", String.format("%d    ------      %f", pdfFile.getOriginalPageSize(currentPage).getWidth(), defaultWidthHotspot));
+        if(originalPageSizeWidth != 0) {
+            float defaultWidthNotes = 70 * pdfFile.getPageSize(currentPage).getWidth() / this.originalPageSizeWidth * getResources().getDisplayMetrics().density;
+            float defaultWidthHotspot = 60 * pdfFile.getPageSize(currentPage).getWidth() / this.originalPageSizeWidth * getResources().getDisplayMetrics().density;
 
             for (TextNote textNote : this.textNotes) {
                 if(!textNote.isEditing()) {
@@ -760,9 +758,7 @@ public class PDFView extends RelativeLayout {
                     drawTextNote(canvas, textNote);
                 }
             }
-        //}
-
-        // Restores the canvas position
+        }
         canvas.translate(-currentXOffset, -currentYOffset);
     }
 
@@ -774,24 +770,21 @@ public class PDFView extends RelativeLayout {
         double x = pdfFile.getPageSize(0).getWidth() * xPercent;
         double y = pdfFile.getPageSize(0).getHeight() * yPercent;
 
-        //float width = toCurrentScale(defaultWidthHotspot + (float)x);
-        //float height = toCurrentScale(defaultWidthHotspot + (float)y);
-
-
-         //if ((defaultWidthHotspot + (float)x) > 10 && (defaultWidthHotspot + (float)y) > 10) {
         int left = (int)toCurrentScale((float)x);
         int top = (int)toCurrentScale((float)y);
         int right = (int)toCurrentScale(defaultWidthHotspot + (float)x);
         int bottom = (int)toCurrentScale(defaultWidthHotspot + (float)y);
 
-        Drawable drawable = getDrawable(this.getContext(), hotspot);
-        drawable.setBounds(
+        if(hotspot.getDrawable() == null) {
+            hotspot.setDrawable(getDrawableForHotspot(this.getContext(), hotspot));
+        }
+        hotspot.getDrawable().setBounds(
                 left,
                 top,
                 right,
                 bottom
         );
-        drawable.draw(canvas);
+        hotspot.getDrawable().draw(canvas);
     }
 
 
@@ -802,26 +795,19 @@ public class PDFView extends RelativeLayout {
         double x = pdfFile.getPageSize(0).getWidth() * xPercent * zoom - defaultWidthNotes / 2;
         double y = pdfFile.getPageSize(0).getHeight() * yPercent * zoom - defaultWidthNotes / 2;
 
-        float width = defaultWidthNotes + (float)x;
-        float height = defaultWidthNotes + (float)y;
+        float right = defaultWidthNotes + (float)x;
+        float bottom = defaultWidthNotes + (float)y;
 
-        if (width > 0 && height > 0) {
-            Bitmap b = this.getBitmapForNoteFromVectorDrawable(this.getContext(), defaultWidthNotes, defaultWidthNotes, note);
-            if (b.isRecycled()) {
-                return;
-            } else {
-                SizeF size = pdfFile.getPageSize(0);
-                float localTranslationX = pdfFile.getPageOffset(0, zoom);
-                float maxHeight = pdfFile.getMaxPageHeight();
-                float localTranslationY = (maxHeight - size.getHeight()) / 2;
-
-                //canvas.translate(localTranslationX, localTranslationY);
-
-                Rect srcRect = new Rect(0, 0, b.getWidth(), b.getHeight());
-                Rect destRect = new Rect((int) x, (int) y, (int) width, (int) height);
-                canvas.drawBitmap(b, srcRect, destRect, null);
-            }
+        if(note.getDrawable() == null) {
+            note.setDrawable(getDrawableForNote(this.getContext(), note));
         }
+        note.getDrawable().setBounds(
+                (int)x,
+                (int)y,
+                (int)right,
+                (int)bottom
+        );
+        note.getDrawable().draw(canvas);
     }
 
 
@@ -884,7 +870,7 @@ public class PDFView extends RelativeLayout {
     }
 
 
-    public Drawable getDrawable(Context context, Hotspot hotspot) {
+    public Drawable getDrawableForHotspot(Context context, Hotspot hotspot) {
         Drawable drawable = null;
         try {
             int drawableId = getResources().getIdentifier(String.format("classification_%s", hotspot.getType()), "drawable", context.getPackageName());
@@ -897,41 +883,9 @@ public class PDFView extends RelativeLayout {
     }
 
 
-    /*public Bitmap getBitmapForHotspotFromVectorDrawable(Context context, float width, float height, Hotspot hotspot) {
-        //if(hotspot.getBitmap() == null) {
-            //Log.d("HOTSPOTS", "1");
-            Drawable drawable = null;
-            try {
-                int drawableId = getResources().getIdentifier(String.format("classification_%s", hotspot.getType()), "drawable", context.getPackageName());
-                drawable = getResources().getDrawable(drawableId);
-            } catch (Exception e) {
-                int drawableId = getResources().getIdentifier("classification_default", "drawable", context.getPackageName());
-                drawable = getResources().getDrawable(drawableId);
-            }
-            Bitmap bitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            hotspot.setBitmap(bitmap);
-            return bitmap;
-        /*}
-        Log.d("HOTSPOTS", "2");
-        return hotspot.getBitmap();
-    }*/
-
-
-    public Bitmap getBitmapForNoteFromVectorDrawable(Context context, float width, float height, Note note) {
-        if(note.getBitmap() == null) {
-            int drawableId = getResources().getIdentifier(String.format("annotation_%s", note.getColor()), "drawable", context.getPackageName());
-            Drawable drawable = getResources().getDrawable(drawableId);
-            Bitmap bitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            note.setBitmap(bitmap);
-            return bitmap;
-        }
-        return note.getBitmap();
+    public Drawable getDrawableForNote(Context context, Note note) {
+        int drawableId = getResources().getIdentifier(String.format("annotation_%s", note.getColor()), "drawable", context.getPackageName());
+        return getResources().getDrawable(drawableId);
     }
 
 

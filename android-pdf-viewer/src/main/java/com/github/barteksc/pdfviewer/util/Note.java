@@ -1,6 +1,7 @@
 package com.github.barteksc.pdfviewer.util;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 public class Note {
 
@@ -8,7 +9,7 @@ public class Note {
     private double yPos;
     private String color;
 
-    private Bitmap bitmap;
+    private Drawable drawable;
 
     public Note(double xPos, double yPos, String color) {
         this.xPos = xPos;
@@ -29,11 +30,11 @@ public class Note {
         return color;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setDrawable(Drawable drawable) {
+        this.drawable = drawable;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public Drawable getDrawable() {
+        return drawable;
     }
 }

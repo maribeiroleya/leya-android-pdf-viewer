@@ -1,6 +1,7 @@
 package com.github.barteksc.pdfviewer.util;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 public class Hotspot {
 
@@ -8,7 +9,7 @@ public class Hotspot {
     private double yPos;
     private String type;
 
-    private Bitmap bitmap;
+    private Drawable drawable;
 
 
     public Hotspot(double xPos, double yPos, String type) {
@@ -30,11 +31,11 @@ public class Hotspot {
         return type;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setDrawable(Drawable drawable) {
+        this.drawable = drawable;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public Drawable getDrawable() {
+        return drawable;
     }
 }
