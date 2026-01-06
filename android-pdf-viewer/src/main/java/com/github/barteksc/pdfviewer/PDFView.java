@@ -738,10 +738,12 @@ public class PDFView extends RelativeLayout {
 
         drawWithListener(canvas, currentPage, callbacks.getOnDraw());
 
-        Log.d("TESTE TESTE", String.format("%d", pdfFile.getOriginalPageSize(currentPage).getWidth()));
         //if(originalPageSizeWidth != 0) {
             float defaultWidthNotes = 70 * pdfFile.getPageSize(currentPage).getWidth() / pdfFile.getOriginalPageSize(currentPage).getWidth() * getResources().getDisplayMetrics().density;
             float defaultWidthHotspot = 60 * pdfFile.getPageSize(currentPage).getWidth() / pdfFile.getOriginalPageSize(currentPage).getWidth() * getResources().getDisplayMetrics().density;
+
+        Log.d("TESTE TESTE", String.format("%d    ------      %f", pdfFile.getOriginalPageSize(currentPage).getWidth(), defaultWidthHotspot));
+
             for (TextNote textNote : this.textNotes) {
                 if(!textNote.isEditing()) {
                     drawTextNote(canvas, textNote);
