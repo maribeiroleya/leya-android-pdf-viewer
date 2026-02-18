@@ -90,6 +90,10 @@ class RenderingHandler extends Handler {
         PdfFile pdfFile = pdfView.pdfFile;
         //pdfFile.openPage(renderingTask.page);
 
+        if (pdfFile == null) {
+            return null;  // era: `return;` (erro de compilação)
+        }
+
         int w = Math.round(renderingTask.width);
         int h = Math.round(renderingTask.height);
 
