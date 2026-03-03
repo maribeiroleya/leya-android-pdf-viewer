@@ -857,6 +857,7 @@ public class PDFView extends RelativeLayout {
 
         Rect testRect2 = new Rect(backGroundRect.left + (int)toCurrentScale((float)paddingLeft) + textNote.getBorderSize()/2, backGroundRect.top + (int)toCurrentScale((float)paddingTop) + textNote.getBorderSize()/2, backGroundRect.right - (int)toCurrentScale((float)paddingLeft) - textNote.getBorderSize()/2, backGroundRect.bottom - (int)toCurrentScale((float)paddingTop)- textNote.getBorderSize()/2);
         Bitmap b = getBitMapForTextNote(testRect2.right-testRect2.left, testRect2.bottom-testRect2.top, textNote);
+        if (b == null) return;
         Rect srcRect = new Rect(0, 0, b.getWidth(), b.getHeight());
         canvas.drawBitmap(b, srcRect, testRect2, null);
     }
@@ -890,6 +891,7 @@ public class PDFView extends RelativeLayout {
 
 
     public Bitmap getBitMapForTextNote(float width, float height, TextNote note) {
+        if (width <= 0 || height <= 0) return null;
         Bitmap bitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
 
         double relation = Math.sqrt(pdfFile.getPageSize(0).getWidth() * pdfFile.getPageSize(0).getHeight());
